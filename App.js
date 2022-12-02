@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import Button from './Components/Button';
-import ImageViewer from './Components/ImageViewer';
+import Button from './components/Button';
+import ImageViewer from './components/ImageViewer';
 import * as ImagePicker from 'expo-image-picker';
-import CircleButton from './Components/CircleButton';
-import IconButton from './Components/IconButton';
-import EmojiPicker from './Components/EmojiPicker';
+import CircleButton from './components/CircleButton';
+import IconButton from './components/IconButton';
+import EmojiPicker from './components/EmojiPicker';
+import EmojiList from './components/EmojiList';
+import EmojiSticker from './components/EmojiSticker';
 
 const PlaceholderImage = require('./assets/images/background-image.png');
 
 export default function App() {
+const [pickedEmoji, setPickedEmoji] = useState(null);
 const [isModalVisible, setIsModalVisible] = useState(false);  
 const [showAppOptions, setShowAppOptions] = useState(false);
 const [selectedImage, setSelectedImage] = useState(null);
@@ -50,6 +53,7 @@ const onModalClose = () => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <ImageViewer placeholderImageSource={PlaceholderImage} selectedImage={selectedImage} />
+        {pickedEmoji !== null ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji} /> : null}
       </View>
       {showAppOptions ? ( 
         <View style={styles.optionsContainer}>
@@ -64,7 +68,9 @@ const onModalClose = () => {
         <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
         <Button label="Use this photo" onPress={() => setShowAppOptions(true)} />
       </View> )}
-      <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}></EmojiPicker>
+      <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
+        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
+      </EmojiPicker>
       <StatusBar style="auto" />
     </View>
   );
